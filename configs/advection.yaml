@@ -1,0 +1,30 @@
+# PDEBench 1D Advection, beta = 1.0. The first 10% of the file is the fixed test set.
+name: advection
+data:
+  root: data/1D/Advection/Train
+  train_file: 1D_Advection_Sols_beta1.0.hdf5
+  test_ratio: 0.1
+  layout: scalar1d
+  channels: 1
+  reduced_resolution: 4
+  reduced_resolution_t: 5
+  t_train: 21
+  initial_step: 1
+model: {modes: 12, width: 20}
+labels: {budget: null, seed: 0}
+pi:
+  residual: advection           # u_t + beta u_x, periodic
+  epochs: 50
+  batch_size: 256
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  grad_clip: 1.0
+  weights: {pde: 1.0, bc: 0.1}
+supervised:
+  epochs: 500
+  batch_size: 256
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  scheduler_step: 100
+  scheduler_gamma: 0.5
+  eval_every: 10

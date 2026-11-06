@@ -1,0 +1,30 @@
+# 1D viscous Burgers, nu = 0.01 / pi (PDEBench generator), separate train/test files.
+name: burgers
+data:
+  root: data/burgers            # contains train.hdf5 (10,000) and test.hdf5 (2,000)
+  train_file: train.hdf5
+  test_file: test.hdf5
+  layout: scalar1d
+  channels: 1
+  reduced_resolution: 4         # 1024 -> 256 grid points
+  reduced_resolution_t: 5       # 201 -> 41 time frames
+  t_train: 41
+  initial_step: 1
+model: {modes: 12, width: 20}
+labels: {budget: null, seed: 0} # null = whole training pool
+pi:
+  residual: burgers             # u_t + u u_x - nu u_xx, periodic
+  epochs: 50
+  batch_size: 256
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  grad_clip: null
+  weights: {pde: 1.0, ic: 1.0, bc: 0.1}
+supervised:
+  epochs: 500
+  batch_size: 256
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  scheduler_step: 100
+  scheduler_gamma: 0.5
+  eval_every: 10

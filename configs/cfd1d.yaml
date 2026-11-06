@@ -1,0 +1,32 @@
+# PDEBench 1D compressible Navier-Stokes (density, pressure, Vx).
+# Pretraining uses the inviscid Euler equations, i.e. an *approximate* physics model.
+name: cfd1d
+data:
+  root: data/1D/CFD/Train
+  train_file: 1D_CFD_Rand_Eta1.e-8_Zeta1.e-8_periodic_Train.hdf5
+  test_ratio: 0.1
+  layout: cfd1d
+  channels: 3
+  reduced_resolution: 8
+  reduced_resolution_t: 5
+  t_train: 21
+  initial_step: 1
+model: {modes: 12, width: 20}
+labels: {budget: null, seed: 0}
+pi:
+  residual: euler
+  gamma: 1.6666666666666667
+  epochs: 50
+  batch_size: 256
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  grad_clip: 1.0
+  weights: {pde: 1.0, bc: 0.1}
+supervised:
+  epochs: 500
+  batch_size: 256
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  scheduler_step: 100
+  scheduler_gamma: 0.5
+  eval_every: 10

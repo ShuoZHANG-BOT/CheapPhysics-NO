@@ -1,0 +1,29 @@
+# PDEBench 2D Darcy flow, beta = 1.0: coefficient field nu -> solution u.
+name: darcy
+data:
+  root: data/2D/DarcyFlow
+  train_file: 2D_DarcyFlow_beta1.0_Train.hdf5
+  test_ratio: 0.1
+  layout: darcy
+  channels: 1
+  reduced_resolution: 2         # 128 x 128 -> 64 x 64
+  t_train: 2                    # frame 0 = coefficient, frame 1 = solution
+  initial_step: 1
+model: {modes: 12, width: 20}
+labels: {budget: null, seed: 0}
+pi:
+  residual: darcy               # -div(nu grad u) = beta, u = 0 on the boundary
+  epochs: 50
+  batch_size: 256
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  grad_clip: 1.0
+  weights: {pde: 1.0, bc: 10.0}
+supervised:
+  epochs: 500
+  batch_size: 256
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  scheduler_step: 100
+  scheduler_gamma: 0.5
+  eval_every: 10
